@@ -10,7 +10,6 @@ FONT = ("Arial", 18, "bold")
 BUTTONCOLOR = "#FFFF63"
 BUTTONFONT = ("Arial", 20)
 
-
 def resource_path(relative):
     if hasattr(sys, "_MEIPASS"):
         return os.path.join(sys._MEIPASS, relative)
@@ -20,33 +19,11 @@ def inputData():
     def activation():
         value = var.get()
         if value == 1:
-            soloEntry.config(state="normal")
             soloButton["state"] = "normal"
-            firstEntry.config(state="disabled")
-            secondEntry.config(state="disabled")
-            thirdEntry.config(state="disabled")
-            fourthEntry.config(state="disabled")
-            fifthEntry.config(state="disabled")
-            sixthEntry.config(state="disabled")
-            seventhEntry.config(state="disabled")
-            eighthEntry.config(state="disabled")
-            ninethEntry.config(state="disabled")
-            tenthEntry.config(state="disabled")
             manyButton["state"] = "disabled"
 
         elif value == 2:
-            soloEntry.config(state="disabled")
             soloButton["state"] = "disabled"
-            firstEntry.config(state="normal")
-            secondEntry.config(state="normal")
-            thirdEntry.config(state="normal")
-            fourthEntry.config(state="normal")
-            fifthEntry.config(state="normal")
-            sixthEntry.config(state="normal")
-            seventhEntry.config(state="normal")
-            eighthEntry.config(state="normal")
-            ninethEntry.config(state="normal")
-            tenthEntry.config(state="normal")
             manyButton["state"] = "normal"
 
     def confirm():
@@ -159,7 +136,6 @@ def inputData():
 
     soloEntry = Entry(inputWindow, width=20)
     soloEntry.grid(row=4, column=0, sticky="e", padx=(0, 40), pady=5)
-    soloEntry.config(state="disabled")
     Label(inputWindow, text="Введіть довжину:", bg=BG, font=FONT).grid(row=4, column=0, sticky="w", padx=15, pady=5)
 
     soloButton = Button(inputWindow, text="Ввести з файлу", font=BUTTONFONT, bg=BUTTONCOLOR, command=soloInput,
@@ -171,52 +147,42 @@ def inputData():
 
     firstEntry = Entry(inputWindow, width=20)
     firstEntry.grid(row=4, column=1, sticky="e", padx=(0, 40), pady=5)
-    firstEntry.config(state="disabled")
     Label(inputWindow, text="1-ий масив:", bg=BG, font=FONT).grid(row=4, column=1, sticky="w", padx=15, pady=5)
 
     secondEntry = Entry(inputWindow, width=20)
     secondEntry.grid(row=5, column=1, sticky="e", padx=(0, 40), pady=5)
-    secondEntry.config(state="disabled")
     Label(inputWindow, text="2-ий масив:", bg=BG, font=FONT).grid(row=5, column=1, sticky="w", padx=15, pady=5)
 
     thirdEntry = Entry(inputWindow, width=20)
     thirdEntry.grid(row=6, column=1, sticky="e", padx=(0, 40), pady=5)
-    thirdEntry.config(state="disabled")
     Label(inputWindow, text="3-ій масив:", bg=BG, font=FONT).grid(row=6, column=1, sticky="w", padx=15, pady=5)
 
     fourthEntry = Entry(inputWindow, width=20)
     fourthEntry.grid(row=7, column=1, sticky="e", padx=(0, 40), pady=5)
-    fourthEntry.config(state="disabled")
     Label(inputWindow, text="4-ий масив:", bg=BG, font=FONT).grid(row=7, column=1, sticky="w", padx=15, pady=5)
 
     fifthEntry = Entry(inputWindow, width=20)
     fifthEntry.grid(row=8, column=1, sticky="e", padx=(0, 40), pady=5)
-    fifthEntry.config(state="disabled")
     Label(inputWindow, text="5-ий масив:", bg=BG, font=FONT).grid(row=8, column=1, sticky="w", padx=15, pady=5)
 
     sixthEntry = Entry(inputWindow, width=20)
     sixthEntry.grid(row=9, column=1, sticky="e", padx=(0, 40), pady=5)
-    sixthEntry.config(state="disabled")
     Label(inputWindow, text="6-ий масив:", bg=BG, font=FONT).grid(row=9, column=1, sticky="w", padx=15, pady=5)
 
     seventhEntry = Entry(inputWindow, width=20)
     seventhEntry.grid(row=10, column=1, sticky="e", padx=(0, 40), pady=5)
-    seventhEntry.config(state="disabled")
     Label(inputWindow, text="7-ий масив:", bg=BG, font=FONT).grid(row=10, column=1, sticky="w", padx=15, pady=5)
 
     eighthEntry = Entry(inputWindow, width=20)
     eighthEntry.grid(row=11, column=1, sticky="e", padx=(0, 40), pady=5)
-    eighthEntry.config(state="disabled")
     Label(inputWindow, text="8-ий масив:", bg=BG, font=FONT).grid(row=11, column=1, sticky="w", padx=15, pady=5)
 
     ninethEntry = Entry(inputWindow, width=20)
     ninethEntry.grid(row=12, column=1, sticky="e", padx=(0, 40), pady=5)
-    ninethEntry.config(state="disabled")
     Label(inputWindow, text="9-ий масив:", bg=BG, font=FONT).grid(row=12, column=1, sticky="w", padx=15, pady=5)
 
     tenthEntry = Entry(inputWindow, width=20)
     tenthEntry.grid(row=13, column=1, sticky="e", padx=(0, 40), pady=5)
-    tenthEntry.config(state="disabled")
     Label(inputWindow, text="10-ий масив:", bg=BG, font=FONT).grid(row=13, column=1, sticky="w", padx=15, pady=5)
 
     manyButton = Button(inputWindow, text="Ввести з файлу", font=BUTTONFONT, bg=BUTTONCOLOR, command=manyInput,
@@ -224,7 +190,7 @@ def inputData():
     manyButton.grid(row=14, column=1, pady=5)
 
     confirmButton = Button(inputWindow, text="Заповнити масиви", bg=BUTTONCOLOR, font=BUTTONFONT, command=confirm)
-    confirmButton.grid(row=15, columnspan=2, sticky="NS")
+    confirmButton.grid(row=15, columnspan=2, sticky="NS", pady=5)
 
 def draw():
     pass
