@@ -100,7 +100,7 @@ def firstTask():
                                                                                                   pady=5)
 
     global img
-    path = resource_path('first.png')
+    path = resource_path('files/first.png')
     img = ImageTk.PhotoImage(file=path)
 
     firstTaskWindow = Toplevel(root)
@@ -212,7 +212,7 @@ def secondTask():
                                                                                                   pady=5)
 
     global img
-    path = resource_path('second.png')
+    path = resource_path('files/second.png')
     img = ImageTk.PhotoImage(file=path)
 
     secondTaskWindow = Toplevel(root)
@@ -326,7 +326,7 @@ def thirdTask():
                                                                                                  pady=5)
 
     global img
-    path = resource_path('third.png')
+    path = resource_path('files/third.png')
     img = ImageTk.PhotoImage(file=path)
 
     thirdTaskWindow = Toplevel(root)
