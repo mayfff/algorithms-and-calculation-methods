@@ -1,19 +1,22 @@
-import time
+from time import time
 from tkinter import *
 from tkinter import messagebox, filedialog
 from random import randint
 import re, os, sys
 from PIL import ImageTk
+import matplotlib.pyplot as plt
 
 BG = "#787878"
 FONT = ("Arial", 18, "bold")
 BUTTONCOLOR = "#FFFF63"
 BUTTONFONT = ("Arial", 20)
 
+
 def resource_path(relative):
     if hasattr(sys, "_MEIPASS"):
         return os.path.join(sys._MEIPASS, relative)
     return os.path.join(relative)
+
 
 def inputData():
     def activation():
@@ -27,6 +30,7 @@ def inputData():
             manyButton["state"] = "normal"
 
     def confirm():
+        global solo
         value = var.get()
         if value == 1:
             for i in range(int(soloEntry.get())):
@@ -38,8 +42,9 @@ def inputData():
                 sixthList.append(randint(-5000, 5000))
                 seventhList.append(randint(-5000, 5000))
                 eighthList.append(randint(-5000, 5000))
-                ninenthList.append(randint(-5000, 5000))
+                ninethList.append(randint(-5000, 5000))
                 tenthList.append(randint(-5000, 5000))
+                solo = True
 
             messagebox.showinfo(title="Результат", message="Масиви заповнені")
             inputWindow.destroy()
@@ -77,6 +82,7 @@ def inputData():
 
             messagebox.showinfo(title="Результат", message="Масиви заповнені")
             inputWindow.destroy()
+            solo = False
 
     def manyInput():
         filepath = filedialog.askopenfilename(initialdir='/',
@@ -114,9 +120,9 @@ def inputData():
                                               title="Відкриття файлу",
                                               filetypes=(("text files", "*.txt"), ("all files", "*.*")))
         with open(filepath, 'r') as file:
-            value = file.read()
+            number = file.read()
             soloEntry.delete(0, END)
-            soloEntry.insert(0, value)
+            soloEntry.insert(0, number)
 
     inputWindow = Toplevel(root)
     inputWindow.title("Введення даних")
@@ -192,8 +198,97 @@ def inputData():
     confirmButton = Button(inputWindow, text="Заповнити масиви", bg=BUTTONCOLOR, font=BUTTONFONT, command=confirm)
     confirmButton.grid(row=15, columnspan=2, sticky="NS", pady=5)
 
+
 def draw():
-    pass
+    def sortMin(arr):
+        n = len(arr)
+        for i in range(n - 1):
+            min_idx = i
+            for j in range(i + 1, n):
+                if arr[j] < arr[min_idx]:
+                    min_idx = j
+            arr[i], arr[min_idx] = arr[min_idx], arr[i]
+
+    timeArray = []
+
+    start = time()
+    sortMin(firstList)
+    finish = time()
+    timeArray.append(round(finish - start, 5))
+
+    start = time()
+    sortMin(secondList)
+    finish = time()
+    timeArray.append(round(finish - start, 5))
+
+    start = time()
+    sortMin(thirdList)
+    finish = time()
+    timeArray.append(round(finish - start, 5))
+
+    start = time()
+    sortMin(fourthList)
+    finish = time()
+    timeArray.append(round(finish - start, 5))
+
+    start = time()
+    sortMin(fifthList)
+    finish = time()
+    timeArray.append(round(finish - start, 5))
+
+    start = time()
+    sortMin(sixthList)
+    finish = time()
+    timeArray.append(round(finish - start, 5))
+
+    start = time()
+    sortMin(seventhList)
+    finish = time()
+    timeArray.append(round(finish - start, 5))
+
+    start = time()
+    sortMin(eighthList)
+    finish = time()
+    timeArray.append(round(finish - start, 5))
+
+    start = time()
+    sortMin(ninethList)
+    finish = time()
+    timeArray.append(round(finish - start, 5))
+
+    start = time()
+    sortMin(tenthList)
+    finish = time()
+    timeArray.append(round(finish - start, 5))
+
+    if solo:
+        coordX = [i for i in range(1, 11)]
+        plt.plot(coordX, sorted(timeArray))
+        plt.xticks(coordX)
+        plt.yticks(sorted(timeArray))
+    else:
+        coordX = [len(firstList), len(secondList), len(thirdList), len(fourthList), len(fifthList), len(sixthList),
+                  len(seventhList), len(eighthList), len(ninethList), len(tenthList)]
+        plt.plot(coordX, timeArray)
+        plt.xticks(coordX)
+        plt.yticks(timeArray)
+
+    plt.title('Графік залежності часу від кількості елементів')
+    plt.xlabel('Список')
+    plt.ylabel('Час')
+
+    coordX = [i * 1000 for i in range(1, 13)]
+    coordY = [i * i for i in coordX]
+
+    plt.figure()
+    plt.plot(coordX, coordY)
+    plt.xticks(coordX)
+    plt.yticks(coordY)
+    plt.title('Графік теоретично відомої обчислювальної складності O(n^2).')
+    plt.xlabel('n')
+    plt.ylabel('n^2')
+
+    plt.show()
 
 firstList = []
 secondList = []
@@ -205,6 +300,9 @@ seventhList = []
 eighthList = []
 ninethList = []
 tenthList = []
+
+global solo
+solo = False
 
 root = Tk()
 var = IntVar()
