@@ -22,7 +22,6 @@ def calculateSin():
 def calculateFunction():
     pass
 
-
 root = Tk()
 root.title("Головне вікно. Лабораторна №3")
 root.geometry("900x600")
