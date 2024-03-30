@@ -44,6 +44,7 @@ def inputData():
                 eighthList.append(randint(-5000, 5000))
                 ninethList.append(randint(-5000, 5000))
                 tenthList.append(randint(-5000, 5000))
+                solo = True
 
             messagebox.showinfo(title="Результат", message="Масиви заповнені")
             inputWindow.destroy()
@@ -81,6 +82,7 @@ def inputData():
 
             messagebox.showinfo(title="Результат", message="Масиви заповнені")
             inputWindow.destroy()
+            solo = False
 
     def manyInput():
         filepath = filedialog.askopenfilename(initialdir='/',
@@ -207,67 +209,72 @@ def draw():
                     min_idx = j
             arr[i], arr[min_idx] = arr[min_idx], arr[i]
 
-    myDict = {}
+    timeArray = []
 
     start = time()
     sortMin(firstList)
     finish = time()
-    myDict['1'] = round(finish - start, 5)
+    timeArray.append(round(finish - start, 5))
 
     start = time()
     sortMin(secondList)
     finish = time()
-    myDict['2'] = round(finish - start, 5)
+    timeArray.append(round(finish - start, 5))
 
     start = time()
     sortMin(thirdList)
     finish = time()
-    myDict['3'] = round(finish - start, 5)
+    timeArray.append(round(finish - start, 5))
 
     start = time()
     sortMin(fourthList)
     finish = time()
-    myDict['4'] = round(finish - start, 5)
+    timeArray.append(round(finish - start, 5))
 
     start = time()
     sortMin(fifthList)
     finish = time()
-    myDict['5'] = round(finish - start, 5)
+    timeArray.append(round(finish - start, 5))
 
     start = time()
     sortMin(sixthList)
     finish = time()
-    myDict['6'] = round(finish - start, 5)
+    timeArray.append(round(finish - start, 5))
 
     start = time()
     sortMin(seventhList)
     finish = time()
-    myDict['7'] = round(finish - start, 5)
+    timeArray.append(round(finish - start, 5))
 
     start = time()
     sortMin(eighthList)
     finish = time()
-    myDict['8'] = round(finish - start, 5)
+    timeArray.append(round(finish - start, 5))
 
     start = time()
     sortMin(ninethList)
     finish = time()
-    myDict['9'] = round(finish - start, 5)
+    timeArray.append(round(finish - start, 5))
 
     start = time()
     sortMin(tenthList)
     finish = time()
-    myDict['10'] = round(finish - start, 5)
+    timeArray.append(round(finish - start, 5))
 
-    sortedDict = dict(sorted(myDict.items(), key=lambda item: (item[1], item[0])))
+    if solo:
+        coordX = [i for i in range(1, 11)]
+        plt.plot(coordX, sorted(timeArray))
+        plt.xticks(coordX)
+        plt.yticks(sorted(timeArray))
+    else:
+        coordX = [len(firstList), len(secondList), len(thirdList), len(fourthList), len(fifthList), len(sixthList),
+                  len(seventhList), len(eighthList), len(ninethList), len(tenthList)]
+        plt.plot(coordX, timeArray)
+        plt.xticks(coordX)
+        plt.yticks(timeArray)
 
-    coordX = [key for key in sortedDict.keys()]
-    coordY = [sortedDict[key] for key in sortedDict.keys()]
-    plt.plot(coordX, coordY)
-    plt.xticks(coordX)
-    plt.yticks(coordY)
     plt.title('Графік залежності часу від кількості елементів')
-    plt.xlabel('Номер масиву')
+    plt.xlabel('Список')
     plt.ylabel('Час')
 
     coordX = [i * 1000 for i in range(1, 13)]
@@ -293,6 +300,9 @@ seventhList = []
 eighthList = []
 ninethList = []
 tenthList = []
+
+global solo
+solo = False
 
 root = Tk()
 var = IntVar()
