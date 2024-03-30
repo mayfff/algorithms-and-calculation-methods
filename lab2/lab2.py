@@ -11,12 +11,10 @@ FONT = ("Arial", 18, "bold")
 BUTTONCOLOR = "#FFFF63"
 BUTTONFONT = ("Arial", 20)
 
-
 def resource_path(relative):
     if hasattr(sys, "_MEIPASS"):
         return os.path.join(sys._MEIPASS, relative)
     return os.path.join(relative)
-
 
 def inputData():
     def activation():
