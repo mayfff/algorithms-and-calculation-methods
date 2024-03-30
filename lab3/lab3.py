@@ -18,65 +18,102 @@ def resource_path(relative):
     return os.path.join(relative)
 
 
-def aitkenInterpolation(x0_point):
-    n_count = len(xKnown)
+def aitkenInterpolation(x0_point, xArray, yArray):
+    n_count = len(xArray)
     p = [0.0] * n_count
 
     for k in range(n_count):
         some = n_count - k
         for i in range(some):
             if k == 0:
-                p[i] = yKnown[i]
+                p[i] = yArray[i]
             else:
-                p[i] = ((x0_point - xKnown[i + k]) * p[i] + (xKnown[i] - x0_point) * p[i + 1]) / (
-                            xKnown[i] - xKnown[i + k])
+                p[i] = ((x0_point - xArray[i + k]) * p[i] + (xArray[i] - x0_point) * p[i + 1]) / (
+                        xArray[i] - xArray[i + k])
 
     return p[0]
 
 
 def enter():
     global a, b, n, x
-    a = int(entryA.get())
-    b = int(entryB.get())
-    n = int(entryN.get())
-    x = int(entryX.get())
-
+    try:
+        a = int(entryA.get())
+        b = int(entryB.get())
+        n = int(entryN.get())
+        x = float(entryX.get())
+    except ValueError:
+        messagebox.showerror(title="Помилка", message="Перевірте вхідні дані")
 
 def calculateSin():
-    def defaultGraphic():
-        global xKnown, yKnown
-        h = (b - a) / 10
-        xKnown = []
-        for i in range(10):
-            xKnown.append(round(a + h * i, 2))
-        yKnown = [sin(i) for i in xKnown]
+    def divergenceX():
+        divergenceXButton.destroy()
+        interpolation = aitkenInterpolation(x, xKnown, yKnown)
 
-        print(yKnown)
+        Label(sinWindow, text=f"Значення x: {x}", bg=BG, font=FONT, fg="white").grid(row=6, columnspan=2, pady=15)
+        Label(sinWindow, text=f"Значення sin(x): {sin(x)}", bg=BG, font=FONT, fg="white").grid(row=7, columnspan=2,
+                                                                                               pady=15)
+        Label(sinWindow, text=f"Інтерполяція sin(x): {interpolation}", bg=BG, font=FONT, fg="white").grid(
+            row=8, columnspan=2, pady=15)
 
-        plt.plot(xKnown, yKnown)
-        plt.title('Графік sin(x)')
-        plt.xlabel('X')
-        plt.ylabel('Y')
+        for i in range(len(xKnown)):
+            if x > xKnown[i]:
+                xKnown.insert(i + 1, (xKnown[i] + x) / 2)
+                yKnown.insert(i + 1, sin((xKnown[i] + x) / 2))
+                break
 
-        h = (b - a) / n
-        xUnknown = []
-        for i in range(n + 1):
-            xUnknown.append(round(a + h * i, 2))
+        nextInterpolation = aitkenInterpolation(x, xKnown, yKnown)
+        Label(sinWindow, text=f"Похибка інтерполяції: {interpolation - nextInterpolation}", bg=BG, font=FONT,
+              fg="white").grid(row=9, columnspan=2, pady=15)
+        Label(sinWindow, text=f"Різниця між інтерполяцією і точним значенням: {interpolation - sin(x)}", bg=BG,
+              font=FONT, fg="white").grid(row=10, columnspan=2, pady=15)
 
-        yUnknown = [aitkenInterpolation(i) for i in xUnknown]
-        allSin = [sin(i) for i in xUnknown]
-        print(yUnknown)
-        print(allSin)
+        k = 1 - (interpolation - sin(x)) / (interpolation - nextInterpolation)
+        Label(sinWindow, text=f"розмитість оцінки: {k}", bg=BG, font=FONT, fg="white").grid(row=11, columnspan=2,
+                                                                                            pady=15)
+
+    def divergenceGraphic():
+        yNode = []
+        for i in range(n):
+            yNode.append(allSin[i] - yUnknown[i])
 
         plt.figure()
 
-        plt.plot(xUnknown, yUnknown)
-        plt.title('Інтерполяція sin(x)')
+        plt.plot(xUnknown, yNode)
+        plt.title('Похибка')
         plt.xlabel('X')
         plt.ylabel('Y')
 
         plt.show()
 
+    def defaultGraphic():
+        global allSin, yUnknown, xUnknown, xKnown, yKnown
+        h = (b - a) / 10
+        xKnown = []
+        for i in range(11):
+            xKnown.append(round(a + h * i, 2))
+        yKnown = [sin(i) for i in xKnown]
+
+        h = (b - a) / (n - 1)
+        xUnknown = []
+        for i in range(n):
+            xUnknown.append(round(a + h * i, 2))
+
+        yUnknown = [aitkenInterpolation(i, xKnown, yKnown) for i in xUnknown]
+        allSin = [sin(i) for i in xUnknown]
+
+        plt.plot(xUnknown, allSin, solid_capstyle='round')
+        plt.title('Графік sin(x)')
+        plt.xlabel('X')
+        plt.ylabel('Y')
+
+        plt.figure()
+
+        plt.plot(xUnknown, yUnknown, solid_capstyle='round')
+        plt.title('Інтерполяція sin(x)')
+        plt.xlabel('X')
+        plt.ylabel('Y')
+
+        plt.show()
 
     sinWindow = Toplevel(root)
     sinWindow.title("sin(x)")
@@ -110,13 +147,13 @@ def calculateSin():
                                   height=7, width=20)
     defaultGraphicButton.grid(row=5, column=0, pady=20)
 
-    divergenceGraphicButton = Button(sinWindow, text="Графік Похибки", bg=BUTTONCOLOR, font=BUTTONFONT, command=enter,
-                                     height=7, width=20)
+    divergenceGraphicButton = Button(sinWindow, text="Графік Похибки", bg=BUTTONCOLOR, font=BUTTONFONT,
+                                     command=divergenceGraphic, height=7, width=20)
     divergenceGraphicButton.grid(row=5, column=1, pady=20)
 
-    divergenceTableButton = Button(sinWindow, text="Таблиця похибок", bg=BUTTONCOLOR, font=BUTTONFONT, command=enter)
-    divergenceTableButton.grid(row=6, columnspan=2)
-
+    divergenceXButton = Button(sinWindow, text="Похибка значення х", bg=BUTTONCOLOR, font=BUTTONFONT,
+                               command=divergenceX)
+    divergenceXButton.grid(row=6, columnspan=2)
 
 def calculateFunction():
     funcWindow = Toplevel(root)
@@ -128,11 +165,15 @@ def calculateFunction():
     Grid.columnconfigure(funcWindow, 0, weight=1)
     Grid.columnconfigure(funcWindow, 1, weight=1)
 
-    Label(funcWindow, text="Введіть межу А: ", font=FONT, bg=BG, fg="white").grid(row=0, column=0, pady=10, sticky="e")
-    Label(funcWindow, text="Введіть межу B: ", font=FONT, bg=BG, fg="white").grid(row=1, column=0, pady=10, sticky="e")
-    Label(funcWindow, text="Введіть кількість точок n: ", font=FONT, bg=BG, fg="white").grid(row=2, column=0, pady=10,
+    Label(funcWindow, text="Введіть межу А: ", font=FONT, bg=BG, fg="white").grid(row=0, column=0, pady=10,
+                                                                                  sticky="e")
+    Label(funcWindow, text="Введіть межу B: ", font=FONT, bg=BG, fg="white").grid(row=1, column=0, pady=10,
+                                                                                  sticky="e")
+    Label(funcWindow, text="Введіть кількість точок n: ", font=FONT, bg=BG, fg="white").grid(row=2, column=0,
+                                                                                             pady=10,
                                                                                              sticky="e")
-    Label(funcWindow, text="Введіть точку x: ", font=FONT, bg=BG, fg="white").grid(row=3, column=0, pady=10, sticky="e")
+    Label(funcWindow, text="Введіть точку x: ", font=FONT, bg=BG, fg="white").grid(row=3, column=0, pady=10,
+                                                                                   sticky="e")
 
     global entryA, entryB, entryN, entryX
     entryA = Entry(funcWindow, width=20)
@@ -156,13 +197,11 @@ def calculateFunction():
     interpolationGraphic.grid(row=6, column=0)
 
     divergenceGraphic = Button(funcWindow, text="Графік Похибки", bg=BUTTONCOLOR, font=BUTTONFONT, command=enter,
-                               height=7,
-                               width=20)
+                               height=7, width=20)
     divergenceGraphic.grid(row=5, column=1, pady=20)
 
-    divergenceTable = Button(funcWindow, text="Таблиця похибок", bg=BUTTONCOLOR, font=BUTTONFONT, command=enter,
-                             height=7,
-                             width=20)
+    divergenceTable = Button(funcWindow, text="Таблиця похибок", bg=BUTTONCOLOR, font=BUTTONFONT,
+                             command=divergenceTable, height=7, width=20)
     divergenceTable.grid(row=6, column=1)
 
 
@@ -189,8 +228,8 @@ img = ImageTk.PhotoImage(file=path)
 Label(root, image=img).grid(row=5, columnspan=2, pady=5)
 Label(root, text="___" * 1000, bg=BG, fg="white", font=FONT).grid(row=6, columnspan=2, pady=10)
 
-inputButton = Button(root, text="Задана функція", bg=BUTTONCOLOR, font=BUTTONFONT, command=calculateFunction, height=7,
-                     width=20)
+inputButton = Button(root, text="Задана функція", bg=BUTTONCOLOR, font=BUTTONFONT, command=calculateFunction,
+                     height=7, width=20)
 inputButton.grid(row=7, column=0)
 
 drawButton = Button(root, text="sin(x)", bg=BUTTONCOLOR, font=BUTTONFONT, command=calculateSin, height=7, width=20)
