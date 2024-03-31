@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import messagebox, filedialog
-from random import randint
+from random import uniform
 import re, os, sys
 from PIL import ImageTk
 import matplotlib.pyplot as plt
@@ -57,9 +57,9 @@ def calculateSin():
             row=8, columnspan=2, pady=15)
 
         for i in range(len(xKnown)):
-            if x > xKnown[i]:
-                xKnown.insert(i + 1, (xKnown[i] + x) / 2)
-                yKnown.insert(i + 1, sin((xKnown[i] + x) / 2))
+            if xKnown[i] > x:
+                xKnown.insert(i - 1, (xKnown[i] + x) / 2)
+                yKnown.insert(i - 1, sin((xKnown[i] + x) / 2))
                 break
 
         nextInterpolation = aitkenInterpolation(x, xKnown, yKnown)
@@ -73,13 +73,27 @@ def calculateSin():
                                                                                             pady=15)
 
     def divergenceGraphic():
-        yNode = []
-        for i in range(n):
-            yNode.append(allSin[i] - yUnknown[i])
+        interpolationList = [aitkenInterpolation(i, xKnown, yKnown) for i in xUnknown]
+
+        while True:
+            additionalNode = uniform(0, 4)
+            if additionalNode not in xKnown:
+                for i in range(len(xKnown)):
+                    if xKnown[i] > additionalNode:
+                        xKnown.insert(i - 1, additionalNode)
+                        yKnown.insert(i - 1, sin(additionalNode))
+                        break
+                break
+
+        nextInterpolationList = [aitkenInterpolation(i, xKnown, yKnown) for i in xUnknown]
+
+        interpolationDiff = []
+        for i in range(len(interpolationList)):
+            interpolationDiff.append(interpolationList[i] - nextInterpolationList[i])
 
         plt.figure()
 
-        plt.plot(xUnknown, yNode)
+        plt.plot(xUnknown, interpolationDiff)
         plt.title('Похибка')
         plt.xlabel('X')
         plt.ylabel('Y')
@@ -102,7 +116,10 @@ def calculateSin():
         yUnknown = [aitkenInterpolation(i, xKnown, yKnown) for i in xUnknown]
         allSin = [sin(i) for i in xUnknown]
 
-        plt.plot(xUnknown, allSin)
+        if n <= 10:
+            plt.plot(xKnown, yKnown)
+        else:
+            plt.plot(xUnknown, allSin)
         plt.title('Графік sin(x)')
         plt.xlabel('X')
         plt.ylabel('Y')
@@ -185,13 +202,27 @@ def calculateFunction():
                                                                                             pady=15)
 
     def divergenceGraphic():
-        yNode = []
-        for i in range(n):
-            yNode.append(allFunc[i] - yUnknown[i])
+        interpolationList = [aitkenInterpolation(i, xKnown, yKnown) for i in xUnknown]
+
+        while True:
+            additionalNode = uniform(0, 4)
+            if additionalNode not in xKnown:
+                for i in range(len(xKnown)):
+                    if xKnown[i] > additionalNode:
+                        xKnown.insert(i - 1, additionalNode)
+                        yKnown.insert(i - 1, sin(additionalNode))
+                        break
+                break
+
+        nextInterpolationList = [aitkenInterpolation(i, xKnown, yKnown) for i in xUnknown]
+
+        interpolationDiff = []
+        for i in range(len(interpolationList)):
+            interpolationDiff.append(interpolationList[i] - nextInterpolationList[i])
 
         plt.figure()
 
-        plt.plot(xUnknown, yNode)
+        plt.plot(xUnknown, interpolationDiff)
         plt.title('Похибка')
         plt.xlabel('X')
         plt.ylabel('Y')
@@ -214,7 +245,10 @@ def calculateFunction():
         yUnknown = [aitkenInterpolation(i, xKnown, yKnown) for i in xUnknown]
         allFunc = [1 / (1 + exp(-i)) for i in xUnknown]
 
-        plt.plot(xUnknown, allFunc)
+        if n <= 10:
+            plt.plot(xKnown, yKnown)
+        else:
+            plt.plot(xUnknown, allFunc)
         plt.title('Графік f(x)')
         plt.xlabel('X')
         plt.ylabel('Y')
