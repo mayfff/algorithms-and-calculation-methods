@@ -237,6 +237,9 @@ def calculateSin():
     tableButton.grid(row=12, columnspan=2)
 
 def calculateFunction():
+    def myFunc(num):
+        return 1 / (1 + exp(-num))
+
     def callTable():
         buildTable(allFunc)
 
@@ -246,7 +249,7 @@ def calculateFunction():
         interpolation = aitkenInterpolation(x, xKnown, yKnown)
 
         Label(funcWindow, text=f"Значення x: {x}", bg=BG, font=FONT, fg="white").grid(row=6, columnspan=2, pady=15)
-        Label(funcWindow, text=f"Значення f(x): {sin(x)}", bg=BG, font=FONT, fg="white").grid(row=7, columnspan=2,
+        Label(funcWindow, text=f"Значення f(x): {myFunc(x)}", bg=BG, font=FONT, fg="white").grid(row=7, columnspan=2,
                                                                                               pady=15)
         Label(funcWindow, text=f"Інтерполяція f(x): {interpolation}", bg=BG, font=FONT, fg="white").grid(
             row=8, columnspan=2, pady=15)
@@ -254,16 +257,16 @@ def calculateFunction():
         for i in range(len(xKnown)):
             if x > xKnown[i]:
                 xKnown.insert(i + 1, (xKnown[i] + x) / 2)
-                yKnown.insert(i + 1, 1 / (1 + exp((xKnown[i] + x) / 2)))
+                yKnown.insert(i + 1, myFunc(x))
                 break
 
         nextInterpolation = aitkenInterpolation(x, xKnown, yKnown)
         Label(funcWindow, text=f"Похибка інтерполяції: {interpolation - nextInterpolation}", bg=BG, font=FONT,
               fg="white").grid(row=9, columnspan=2, pady=15)
-        Label(funcWindow, text=f"Різниця між інтерполяцією і точним значенням: {interpolation - sin(x)}", bg=BG,
+        Label(funcWindow, text=f"Різниця між інтерполяцією і точним значенням: {interpolation - myFunc(x)}", bg=BG,
               font=FONT, fg="white").grid(row=10, columnspan=2, pady=15)
 
-        k = 1 - (interpolation - sin(x)) / (interpolation - nextInterpolation)
+        k = 1 - (interpolation - myFunc(x)) / (interpolation - nextInterpolation)
         Label(funcWindow, text=f"розмитість оцінки: {k}", bg=BG, font=FONT, fg="white").grid(row=11, columnspan=2,
                                                                                              pady=15)
 
@@ -277,7 +280,7 @@ def calculateFunction():
                 for i in range(len(xKnown)):
                     if xKnown[i] > additionalNode:
                         xKnown.insert(i - 1, additionalNode)
-                        yKnown.insert(i - 1, sin(additionalNode))
+                        yKnown.insert(i - 1, myFunc(x))
                         break
                 break
 
@@ -288,9 +291,8 @@ def calculateFunction():
             if interpolationList[i] - nextInterpolationList[i] != 0:
                 interpolationDiff.append(interpolationList[i] - nextInterpolationList[i])
             else:
-                interpolationDiff.append(0.0000001)
+                interpolationDiff.append(0.000000001)
 
-        print(interpolationDiff)
 
         plt.figure()
 
@@ -308,7 +310,7 @@ def calculateFunction():
         xKnown = []
         for i in range(11):
             xKnown.append(round(a + h * i, 2))
-        yKnown = [1 / (1 + exp(-i)) for i in xKnown]
+        yKnown = [myFunc(i) for i in xKnown]
 
         h = (b - a) / (n - 1)
         xUnknown = []
@@ -316,7 +318,7 @@ def calculateFunction():
             xUnknown.append(round(a + h * i, 2))
 
         yUnknown = [aitkenInterpolation(i, xKnown, yKnown) for i in xUnknown]
-        allFunc = [1 / (1 + exp(-i)) for i in xUnknown]
+        allFunc = [myFunc(i) for i in xUnknown]
 
         if n <= 10:
             plt.plot(xKnown, yKnown)
