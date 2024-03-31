@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import messagebox, filedialog
+from tkinter import messagebox
 from random import uniform
 import re, os, sys
 from PIL import ImageTk
@@ -17,7 +17,7 @@ def buildTable(funcList):
     diff = []
     l = len(interpolationList)
     for i in range(l):
-        diff.append(funcList[i] - interpolationList[i])
+        diff.append(interpolationList[i] - funcList[i])
         listOfK.append(1 - diff[i] / interpolationDiff[i])
 
     table = Toplevel(root)
@@ -25,17 +25,42 @@ def buildTable(funcList):
     table.title("table")
 
     entries = []
-    tableWidth = 5
+    tableWidth = 4
     tableHeight = n + 1
     counter = 0
     for row in range(tableHeight):
         for column in range(tableWidth):
-            entries.append(Entry(table, width=20, justify="center"))
+            entries.append(Entry(table, width=25, justify="center"))
             entries[counter].grid(row=row, column=column)
+            entries[counter].config(font=("Helvetica", 12, "bold"))
             counter += 1
 
-    for i in range(counter):
-        entries[counter].insert(0, counter)
+    entries[0].insert(0, 'n')
+    j = 1
+    for i in range(4, counter, 4):
+        entries[i].insert(0, j)
+        j += 1
+
+    entries[1].insert(0, 'Похибка')
+    j = 0
+    for i in range(5, counter, 4):
+        entries[i].config(font=("Helvetica", 12))
+        entries[i].insert(0, interpolationDiff[j])
+        j += 1
+
+    entries[2].insert(0, 'Різниця')
+    j = 0
+    for i in range(6, counter, 4):
+        entries[i].config(font=("Helvetica", 12))
+        entries[i].insert(0, diff[j])
+        j += 1
+
+    entries[3].insert(0, 'Коефіцієнт k')
+    j = 0
+    for i in range(7, counter, 4):
+        entries[i].config(font=("Helvetica", 12))
+        entries[i].insert(0, listOfK[j])
+        j += 1
 
 def resource_path(relative):
     if hasattr(sys, "_MEIPASS"):
@@ -65,12 +90,16 @@ def enter():
         a = int(entryA.get())
         b = int(entryB.get())
         n = int(entryN.get())
-        x = float(entryX.get())
+        x = float(entryX.get().replace(',', '.'))
     except ValueError:
         messagebox.showerror(title="Помилка", message="Перевірте вхідні дані")
-
+    if a > x or x > b:
+        messagebox.showerror(title="Помилка", message="x має бути в межах від А до B")
 
 def calculateSin():
+    def callTable():
+        buildTable(allSin)
+
     def divergenceX():
         divergenceXButton.destroy()
         interpolation = aitkenInterpolation(x, xKnown, yKnown)
@@ -203,6 +232,8 @@ def calculateSin():
                                command=divergenceX)
     divergenceXButton.grid(row=6, columnspan=2)
 
+    tableButton = Button(sinWindow, text="Таблиця похибок", bg=BUTTONCOLOR, font=BUTTONFONT, command=callTable)
+    tableButton.grid(row=12, columnspan=2)
 
 def calculateFunction():
     def callTable():
