@@ -27,6 +27,7 @@ def buildTable(funcList):
     table = Toplevel(root)
     table.configure(bg=BG)
     table.title("table")
+    table.resizable(False, False)
 
     entries = []
     tableWidth = 4
@@ -131,7 +132,7 @@ def calculateSin():
         interpolationList = [aitkenInterpolation(i, xKnown, yKnown) for i in xUnknown]
 
         while True:
-            additionalNode = uniform(0, 4)
+            additionalNode = uniform(a, b)
             if additionalNode not in xKnown:
                 for i in range(len(xKnown)):
                     if xKnown[i] > additionalNode:
@@ -194,7 +195,7 @@ def calculateSin():
 
     sinWindow = Toplevel(root)
     sinWindow.title("sin(x)")
-    sinWindow.geometry("900x950")
+    sinWindow.geometry("900x1000")
     sinWindow.resizable(False, False)
     sinWindow.configure(bg=BG)
 
@@ -271,7 +272,7 @@ def calculateFunction():
         interpolationList = [aitkenInterpolation(i, xKnown, yKnown) for i in xUnknown]
 
         while True:
-            additionalNode = uniform(0, 4)
+            additionalNode = uniform(a, b)
             if additionalNode not in xKnown:
                 for i in range(len(xKnown)):
                     if xKnown[i] > additionalNode:
@@ -288,6 +289,8 @@ def calculateFunction():
                 interpolationDiff.append(interpolationList[i] - nextInterpolationList[i])
             else:
                 interpolationDiff.append(0.0000001)
+
+        print(interpolationDiff)
 
         plt.figure()
 
@@ -334,7 +337,7 @@ def calculateFunction():
 
     funcWindow = Toplevel(root)
     funcWindow.title("Задана функція")
-    funcWindow.geometry("900x950")
+    funcWindow.geometry("900x1000")
     funcWindow.resizable(False, False)
     funcWindow.configure(bg=BG)
 
