@@ -12,6 +12,31 @@ BUTTONCOLOR = "#FFFF63"
 BUTTONFONT = ("Arial", 20)
 
 
+def buildTable(funcList):
+    listOfK = []
+    diff = []
+    l = len(interpolationList)
+    for i in range(l):
+        diff.append(funcList[i] - interpolationList[i])
+        listOfK.append(1 - diff[i] / interpolationDiff[i])
+
+    table = Toplevel(root)
+    table.configure(bg=BG)
+    table.title("table")
+
+    entries = []
+    tableWidth = 5
+    tableHeight = n + 1
+    counter = 0
+    for row in range(tableHeight):
+        for column in range(tableWidth):
+            entries.append(Entry(table, width=20, justify="center"))
+            entries[counter].grid(row=row, column=column)
+            counter += 1
+
+    for i in range(counter):
+        entries[counter].insert(0, counter)
+
 def resource_path(relative):
     if hasattr(sys, "_MEIPASS"):
         return os.path.join(sys._MEIPASS, relative)
@@ -73,6 +98,7 @@ def calculateSin():
                                                                                             pady=15)
 
     def divergenceGraphic():
+        global interpolationList, interpolationDiff
         interpolationList = [aitkenInterpolation(i, xKnown, yKnown) for i in xUnknown]
 
         while True:
@@ -89,7 +115,11 @@ def calculateSin():
 
         interpolationDiff = []
         for i in range(len(interpolationList)):
-            interpolationDiff.append(interpolationList[i] - nextInterpolationList[i])
+            if interpolationList[i] - nextInterpolationList[i] != 0:
+                interpolationDiff.append(interpolationList[i] - nextInterpolationList[i])
+            else:
+                interpolationDiff.append(0.0000001)
+
 
         plt.figure()
 
@@ -175,13 +205,17 @@ def calculateSin():
 
 
 def calculateFunction():
+    def callTable():
+        buildTable(allFunc)
+
     def divergenceX():
+
         divergenceXButton.destroy()
         interpolation = aitkenInterpolation(x, xKnown, yKnown)
 
         Label(funcWindow, text=f"Значення x: {x}", bg=BG, font=FONT, fg="white").grid(row=6, columnspan=2, pady=15)
         Label(funcWindow, text=f"Значення f(x): {sin(x)}", bg=BG, font=FONT, fg="white").grid(row=7, columnspan=2,
-                                                                                             pady=15)
+                                                                                              pady=15)
         Label(funcWindow, text=f"Інтерполяція f(x): {interpolation}", bg=BG, font=FONT, fg="white").grid(
             row=8, columnspan=2, pady=15)
 
@@ -199,9 +233,10 @@ def calculateFunction():
 
         k = 1 - (interpolation - sin(x)) / (interpolation - nextInterpolation)
         Label(funcWindow, text=f"розмитість оцінки: {k}", bg=BG, font=FONT, fg="white").grid(row=11, columnspan=2,
-                                                                                            pady=15)
+                                                                                             pady=15)
 
     def divergenceGraphic():
+        global interpolationList, interpolationDiff
         interpolationList = [aitkenInterpolation(i, xKnown, yKnown) for i in xUnknown]
 
         while True:
@@ -218,7 +253,10 @@ def calculateFunction():
 
         interpolationDiff = []
         for i in range(len(interpolationList)):
-            interpolationDiff.append(interpolationList[i] - nextInterpolationList[i])
+            if interpolationList[i] - nextInterpolationList[i] != 0:
+                interpolationDiff.append(interpolationList[i] - nextInterpolationList[i])
+            else:
+                interpolationDiff.append(0.0000001)
 
         plt.figure()
 
@@ -228,6 +266,7 @@ def calculateFunction():
         plt.ylabel('Y')
 
         plt.show()
+
 
     def defaultGraphic():
         global allFunc, yUnknown, xUnknown, xKnown, yKnown
@@ -305,6 +344,8 @@ def calculateFunction():
     divergenceXButton = Button(funcWindow, text="Похибка х", bg=BUTTONCOLOR, font=BUTTONFONT, command=divergenceX)
     divergenceXButton.grid(row=6, columnspan=2)
 
+    tableButton = Button(funcWindow, text="Таблиця похибок", bg=BUTTONCOLOR, font=BUTTONFONT, command=callTable)
+    tableButton.grid(row=12, columnspan=2)
 
 a, b, n, x = 0, 4, 11, 0
 
