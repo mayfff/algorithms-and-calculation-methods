@@ -11,6 +11,10 @@ FONT = ("Arial", 18, "bold")
 BUTTONCOLOR = "#FFFF63"
 BUTTONFONT = ("Arial", 20)
 
+def resource_path(relative):
+    if hasattr(sys, "_MEIPASS"):
+        return os.path.join(sys._MEIPASS, relative)
+    return os.path.join(relative)
 
 def buildTable(funcList):
     listOfK = []
@@ -38,6 +42,7 @@ def buildTable(funcList):
     entries[0].insert(0, 'n')
     j = 1
     for i in range(4, counter, 4):
+        entries[i].config(font=("Helvetica", 12))
         entries[i].insert(0, j)
         j += 1
 
@@ -61,11 +66,6 @@ def buildTable(funcList):
         entries[i].config(font=("Helvetica", 12))
         entries[i].insert(0, listOfK[j])
         j += 1
-
-def resource_path(relative):
-    if hasattr(sys, "_MEIPASS"):
-        return os.path.join(sys._MEIPASS, relative)
-    return os.path.join(relative)
 
 
 def aitkenInterpolation(x0_point, xArray, yArray):
