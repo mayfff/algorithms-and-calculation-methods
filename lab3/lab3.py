@@ -150,7 +150,6 @@ def calculateSin():
             else:
                 interpolationDiff.append(0.0000001)
 
-
         plt.figure()
 
         plt.plot(xUnknown, interpolationDiff)
@@ -163,30 +162,37 @@ def calculateSin():
     def defaultGraphic():
         global allSin, yUnknown, xUnknown, xKnown, yKnown
         h = (b - a) / 10
+        hSin = (b - a) / 100
         xKnown = []
+        xSin = []
         for i in range(11):
-            xKnown.append(round(a + h * i, 2))
+            xKnown.append(a + h * i)
+        for i in range(101):
+            xSin.append(a + hSin * i)
         yKnown = [sin(i) for i in xKnown]
+        ySin = [sin(i) for i in xSin]
 
         h = (b - a) / (n - 1)
         xUnknown = []
+        xUnknownGraph = []
         for i in range(n):
-            xUnknown.append(round(a + h * i, 2))
+            xUnknown.append(a + h * i)
+
+        for i in range(n * 10):
+            xUnknownGraph.append((a + h * i) / 10)
 
         yUnknown = [aitkenInterpolation(i, xKnown, yKnown) for i in xUnknown]
+        yUnknownGraph = [aitkenInterpolation(i, xKnown, yKnown) for i in xUnknownGraph]
         allSin = [sin(i) for i in xUnknown]
 
-        if n <= 10:
-            plt.plot(xKnown, yKnown)
-        else:
-            plt.plot(xUnknown, allSin)
+        plt.plot(xSin, ySin)
         plt.title('Графік sin(x)')
         plt.xlabel('X')
         plt.ylabel('Y')
 
         plt.figure()
 
-        plt.plot(xUnknown, yUnknown)
+        plt.plot(xUnknownGraph, yUnknownGraph)
         plt.title('Інтерполяція sin(x)')
         plt.xlabel('X')
         plt.ylabel('Y')
@@ -238,7 +244,7 @@ def calculateSin():
 
 def calculateFunction():
     def myFunc(num):
-        return 1 / (1 + exp(-num))
+        return 1 / (1 + exp(-1 * num))
 
     def callTable():
         buildTable(allFunc)
@@ -303,34 +309,40 @@ def calculateFunction():
 
         plt.show()
 
-
     def defaultGraphic():
         global allFunc, yUnknown, xUnknown, xKnown, yKnown
         h = (b - a) / 10
+        hFunc = (b - a) / 100
         xKnown = []
+        xFunc = []
         for i in range(11):
-            xKnown.append(round(a + h * i, 2))
+            xKnown.append(a + h * i)
+        for i in range(101):
+            xFunc.append(a + hFunc * i)
         yKnown = [myFunc(i) for i in xKnown]
+        yFunc = [myFunc(i) for i in xFunc]
 
         h = (b - a) / (n - 1)
         xUnknown = []
+        xUnknownGraph = []
         for i in range(n):
-            xUnknown.append(round(a + h * i, 2))
+            xUnknown.append(a + h * i)
+
+        for i in range(n * 10):
+            xUnknownGraph.append(round((a + h * i) / 10, 2))
 
         yUnknown = [aitkenInterpolation(i, xKnown, yKnown) for i in xUnknown]
+        yUnknownGraph = [aitkenInterpolation(i, xKnown, yKnown) for i in xUnknownGraph]
         allFunc = [myFunc(i) for i in xUnknown]
 
-        if n <= 10:
-            plt.plot(xKnown, yKnown)
-        else:
-            plt.plot(xUnknown, allFunc)
+        plt.plot(xFunc, yFunc)
         plt.title('Графік f(x)')
         plt.xlabel('X')
         plt.ylabel('Y')
 
         plt.figure()
 
-        plt.plot(xUnknown, yUnknown)
+        plt.plot(xUnknownGraph, yUnknownGraph)
         plt.title('Інтерполяція f(x)')
         plt.xlabel('X')
         plt.ylabel('Y')
