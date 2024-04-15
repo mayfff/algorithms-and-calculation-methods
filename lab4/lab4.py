@@ -4,15 +4,18 @@ import re, os, sys
 from PIL import ImageTk
 import matplotlib.pyplot as plt
 
+
 def resource_path(relative):
     if hasattr(sys, "_MEIPASS"):
         return os.path.join(sys._MEIPASS, relative)
     return os.path.join(relative)
 
+
 BG = "#787878"
-FONT = ("Arial", 18, "bold")
+FONT = ("Helvetica", 18, "bold")
 BUTTONCOLOR = "#FFFF63"
-BUTTONFONT = ("Arial", 20)
+BUTTONFONT = ("Helvetica", 20)
+
 
 def method(A, B, epsilon):
     arrayA.append(min(A, B))
@@ -41,6 +44,50 @@ def derivativeF(x):
 def f(x):
     return x ** 3 + 10 * x - 9
 
+
+def buildTable():
+    answer = method(a, b, e)
+
+    table = Toplevel(root)
+    table.configure(bg=BG)
+    table.title("table")
+    table.resizable(False, False)
+
+    entries = []
+    tableWidth = 3
+    tableHeight = len(arrayA) + 1
+    counter = 0
+    for row in range(tableHeight):
+        for column in range(tableWidth):
+            entries.append(Entry(table, width=25, justify="center"))
+            entries[counter].grid(row=row, column=column)
+            entries[counter].config(font=("Helvetica", 12, "bold"))
+            counter += 1
+
+    entries[0].insert(0, 'А')
+    j = 0
+    for i in range(3, counter, 3):
+        entries[i].config(font=("Helvetica", 12))
+        entries[i].insert(0, arrayA[j])
+        j += 1
+
+    entries[1].insert(0, 'X')
+    j = 0
+    for i in range(4, counter, 3):
+        entries[i].config(font=("Helvetica", 12))
+        entries[i].insert(0, arrayX[j])
+        j += 1
+
+    entries[2].insert(0, 'B')
+    j = 0
+    for i in range(5, counter, 3):
+        entries[i].config(font=("Helvetica", 12))
+        entries[i].insert(0, arrayB[j])
+        j += 1
+
+    Label(table, text=f"Корінь - {round(answer, 5)}", font=FONT, bg=BG, fg="white").grid(row=tableHeight, column=1,
+                                                                                         pady=20)
+
 def enter():
     global a, b, e
     try:
@@ -58,6 +105,8 @@ def enter():
     if f(a) * f(b) > 0:
         messagebox.showerror("Помилка", "Неправильні межі")
         return
+
+    tableButton["state"] = "normal"
 
 arrayA = []
 arrayB = []
@@ -96,5 +145,9 @@ Label(root, text="Введіть ε:", bg=BG, font=FONT, fg="white").grid(row=9,
 
 enterButton = Button(root, text="Ввести", bg=BUTTONCOLOR, font=BUTTONFONT, command=enter)
 enterButton.grid(row=10, columnspan=2, padx=10)
+
+tableButton = Button(root, text="Знайти корінь", bg=BUTTONCOLOR, font=BUTTONFONT, command=buildTable, height=7,
+                     width=20, state="disabled")
+tableButton.grid(row=11, columnspan=2, pady=10)
 
 root.mainloop()
