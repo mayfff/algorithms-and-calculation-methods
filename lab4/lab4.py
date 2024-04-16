@@ -44,6 +44,26 @@ def derivativeF(x):
 def f(x):
     return x ** 3 + 10 * x - 9
 
+def buildGraph():
+    coordX = []
+    coordY = []
+    i = a
+    while i <= b:
+        coordX.append(i)
+        coordY.append(f(i))
+        i += 0.0001
+
+    plt.figure()
+
+    plt.plot(coordX, coordY)
+    plt.axhline(0, color='black')
+    plt.title('Графік функції')
+    plt.xlabel('X')
+    plt.ylabel('Y')
+
+    plt.show()
+
+
 
 def buildTable():
     answer = method(a, b, e)
@@ -107,6 +127,7 @@ def enter():
         return
 
     tableButton["state"] = "normal"
+    graphButton["state"] = "normal"
 
 arrayA = []
 arrayB = []
@@ -114,7 +135,7 @@ arrayX = []
 
 root = Tk()
 root.title("Головне вікно. Лабораторна №4")
-root.geometry("900x900")
+root.geometry("900x1200")
 root.resizable(False, False)
 root.configure(bg=BG)
 
@@ -149,5 +170,9 @@ enterButton.grid(row=10, columnspan=2, padx=10)
 tableButton = Button(root, text="Знайти корінь", bg=BUTTONCOLOR, font=BUTTONFONT, command=buildTable, height=7,
                      width=20, state="disabled")
 tableButton.grid(row=11, columnspan=2, pady=10)
+
+graphButton = Button(root, text="Побудувати графік", bg=BUTTONCOLOR, font=BUTTONFONT, command=buildGraph, height=7,
+                     width=20, state="disabled")
+graphButton.grid(row=12, columnspan=2, pady=10)
 
 root.mainloop()
