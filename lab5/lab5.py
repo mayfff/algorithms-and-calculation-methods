@@ -10,14 +10,22 @@ def resource_path(relative):
         return os.path.join(sys._MEIPASS, relative)
     return os.path.join(relative)
 
+
+def result():
+    pass
+
+def getMatrix():
+    resultButton["state"] = NORMAL
+
+
 BG = "#787878"
 FONT = ("Helvetica", 18, "bold")
 BUTTONCOLOR = "#FFFF63"
 BUTTONFONT = ("Helvetica", 20)
 
 root = Tk()
-root.title("Головне вікно. Лабораторна №4")
-root.geometry("900x1200")
+root.title("Головне вікно. Лабораторна №5")
+root.geometry("900x900")
 root.resizable(False, False)
 root.configure(bg=BG)
 
@@ -29,5 +37,19 @@ Label(root, text="Інформація про студента", bg=BG, fg="whit
 Label(root, text="ПІБ: Закревський Данило Сергійович", bg=BG, fg="white", font=FONT).grid(row=2, columnspan=2)
 Label(root, text="Група: ІО-24", bg=BG, fg="white", font=FONT).grid(row=3, columnspan=2)
 Label(root, text="Варіант: 11", bg=BG, fg="white", font=FONT).grid(row=4, columnspan=2)
+
+global img
+path = resource_path('task.png')
+img = ImageTk.PhotoImage(file=path)
+Label(root, image=img).grid(row=5, columnspan=2)
+Label(root, text="___" * 1000, bg=BG, fg="white", font=FONT).grid(row=6, columnspan=2, pady=10)
+
+matrixButton = Button(root, text="Введення матриці", bg=BUTTONCOLOR, font=BUTTONFONT, command=getMatrix, height=7,
+                      width=20)
+matrixButton.grid(row=7, column=0)
+
+resultButton = Button(root, text="Кінцева матриця \nта результат", bg=BUTTONCOLOR, font=BUTTONFONT, command=result,
+                      height=7, width=20, state="disabled")
+resultButton.grid(row=7, column=1)
 
 root.mainloop()
