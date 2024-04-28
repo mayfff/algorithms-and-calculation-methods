@@ -23,8 +23,10 @@ def result():
             for i in range(k + 1, 4):
                 if matrix[k][k] == 0:
                     swapRows(k, i)
-
-                M = matrix[i][k] / matrix[k][k]
+                try:
+                    M = matrix[i][k] / matrix[k][k]
+                except ZeroDivisionError:
+                    messagebox.showerror("Помилка", "Неможливо визначити корені!")
 
                 for j in range(k, 4):
                     matrix[i][j] -= M * matrix[k][j]
@@ -184,21 +186,26 @@ def result():
 def getMatrix():
     def enter():
         global matrix, free
-        firstRow = [float(entry11.get().replace(',', '.')), float(entry12.get().replace(',', '.')),
-                    float(entry13.get().replace(',', '.')), float(entry14.get().replace(',', '.'))]
-        secondRow = [float(entry21.get().replace(',', '.')), float(entry22.get().replace(',', '.')),
-                     float(entry23.get().replace(',', '.')), float(entry24.get().replace(',', '.'))]
-        thirdRow = [float(entry31.get().replace(',', '.')), float(entry32.get().replace(',', '.')),
-                    float(entry33.get().replace(',', '.')), float(entry34.get().replace(',', '.'))]
-        fourthRow = [float(entry41.get().replace(',', '.')), float(entry42.get().replace(',', '.')),
-                     float(entry43.get().replace(',', '.')), float(entry44.get().replace(',', '.'))]
-        free = [float(entry15.get().replace(',', '.')), float(entry25.get().replace(',', '.')),
-                float(entry35.get().replace(',', '.')), float(entry45.get().replace(',', '.'))]
+        try:
+            firstRow = [float(entry11.get().replace(',', '.')), float(entry12.get().replace(',', '.')),
+                        float(entry13.get().replace(',', '.')), float(entry14.get().replace(',', '.'))]
+            secondRow = [float(entry21.get().replace(',', '.')), float(entry22.get().replace(',', '.')),
+                         float(entry23.get().replace(',', '.')), float(entry24.get().replace(',', '.'))]
+            thirdRow = [float(entry31.get().replace(',', '.')), float(entry32.get().replace(',', '.')),
+                        float(entry33.get().replace(',', '.')), float(entry34.get().replace(',', '.'))]
+            fourthRow = [float(entry41.get().replace(',', '.')), float(entry42.get().replace(',', '.')),
+                         float(entry43.get().replace(',', '.')), float(entry44.get().replace(',', '.'))]
+            free = [float(entry15.get().replace(',', '.')), float(entry25.get().replace(',', '.')),
+                    float(entry35.get().replace(',', '.')), float(entry45.get().replace(',', '.'))]
+        except ValueError:
+            messagebox.showerror("Помилка", "Некоректно введені дані")
 
         matrix.append(firstRow)
         matrix.append(secondRow)
         matrix.append(thirdRow)
         matrix.append(fourthRow)
+
+        messagebox.showinfo("Результат", "Матрицю заповнено")
 
     resultButton["state"] = NORMAL
 
